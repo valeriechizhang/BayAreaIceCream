@@ -27,8 +27,11 @@ var ViewModel = function() {
     self.noFilterResult = ko.observable('');
 
     self.filterInput.subscribe(function() {
+        hideMarkers(markers);
         var filter = self.filterInput().toLowerCase();
         if (filter === '') {
+            showListings();
+            self.noFilterResult('');
             self.locationList.removeAll();
             self.locationList.push.apply(self.locationList, locations);
         } else {
@@ -36,6 +39,8 @@ var ViewModel = function() {
             var filterList = [];
             for (var i = 0; i < locations.length; i++) {
                 if (locations[i].title.toLowerCase().includes(filter)) {
+                    loc = locations[i]
+                    showMarker(loc);
                     filterList.push(locations[i]);
                     count += 1;
                 }
@@ -213,22 +218,26 @@ function populateInfoWindow(marker, infowindow) {
                 + details.photo_suffix + '">';
         }
         innerHTML += '</div>';
-            // Check to make sure the infowindow is not already opened on this marker/
-        if (infowindow.marker != marker) {
-            infowindow.marker = marker;
-            infowindow.setContent(innerHTML);
-            infowindow.open(map, marker);
-            // Make sure the marker property is cleared if the infowindow is closed
-            infowindow.addListener('closeclick', function() {
-                showListings();
-                infowindow.marker = null;
-            });
+        infowindow.setContent(innerHTML);
 
-            infowindow.open(map, marker);
-        }
     }).error(function() {
-        console.log('Foursquare API Request Error');
+        innerHTML += 'Foursquare API Request Error</div>';
+        infowindow.setContent(innerHTML);
     });
+
+
+    // Check to make sure the infowindow is not already opened on this marker/
+    if (infowindow.marker != marker) {
+        infowindow.marker = marker;
+        infowindow.open(map, marker);
+        // Make sure the marker property is cleared if the infowindow is closed
+        infowindow.addListener('closeclick', function() {
+            showListings();
+            infowindow.marker = null;
+        });
+
+        infowindow.open(map, marker);
+    }
 }
 
 
@@ -240,6 +249,16 @@ function showListings() {
         bounds.extend(markers[i].position);
     }
     map.fitBounds(bounds);
+}
+
+
+function showMarker(location) {
+    for (var i = 0; i < markers.length; i++) {
+        if (markers[i].title == location.title) {
+            var marker = markers[i];
+            marker.setMap(map)
+        }
+    }
 }
 
 

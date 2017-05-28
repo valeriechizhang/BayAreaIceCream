@@ -7,13 +7,20 @@
 
 
 <body>
+
     <div id="nav-bar">
-        <h3>Bay Area Ice Cream Map</h3>
+        <div id="nav-title" style="text-align:center;">
+            <h2>Bay Area Ice Cream Map</h2>
+            <img src="Powered-by-Foursquare.png" alt="Foursquare-logo" style="height:20px;">
+        </div>
         <h4 id="menu" data-bind="text: menuAction, click: toggleNav"></h4>
     </div>
     <div class="container">
         <div id="options-box">
-            <h2>Bay Area Ice Cream Map</h2>
+            <div id="menu-title" style="text-align:center;">
+                <h2>Bay Area Ice Cream Map</h2>
+                <img src="Powered-by-Foursquare.png" alt="Foursquare-logo" style="height:20px;">
+            </div>
             <div>
                 <input id="show-listings" type="button" value="Show Listings">
                 <input id="hide-listings" type="button" value="Hide Listings">
@@ -29,6 +36,7 @@
                     <li data-bind='text: title, click: $parent.clickLocation'></li>
                 </ur>
             </div>
+
         </div>
         <div id="map"></div>
     </div>

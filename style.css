@@ -21,6 +21,16 @@ h1 {
     text-align: center;
 }
 
+li {
+    color: #525454;
+    font-size: 14px;
+}
+
+li:hover {
+    color: #696969;
+    font-size: 16px;
+}
+
 #hide-listings,
 #show-listings {
     width: 48%;
@@ -45,7 +55,7 @@ hr {
     background: #ffffff;
     height: 100%;
     line-height: 35px;
-    padding: 20px 20px 30px 10px;
+    padding: 20px 20px 10px 10px;
     margin-left: 10px;
     text-align: left;
     width: 340px;
@@ -60,24 +70,9 @@ hr {
     font-size: 12px;
 }
 
-#toggle-drawing {
-    width: 27%;
-    position: relative;
-    margin-left: 10px;
-}
-
-#filter-text,
-#zoom-to-area-text {
+#filter-text {
     position: relative;
     width: 70%;
-}
-
-#zoom-to-area {
-    width: 24%;
-}
-
-#search-within-time-text {
-    width: 84%;
 }
 
 #nav-bar {
@@ -87,18 +82,12 @@ hr {
     height: 70px;
 }
 
-@media (min-width: 700px) {
-    #options-box {
-        width: 340px;;
-        display: block;
-    }
-    #map {
-        left: 362px;
-        display: block;
-    }
-    #nav-bar {
-        display: none;
-    }
+#menu-title {
+    display: block;
+}
+
+#nav-title {
+    display: none;
 }
 
 @media (max-width: 700px) {
@@ -112,6 +101,12 @@ hr {
     }
     #nav-bar {
         display: inline;
+    }
+    #menu-title {
+        display: none;
+    }
+    #nav-title {
+        display: block;
     }
 }
 
