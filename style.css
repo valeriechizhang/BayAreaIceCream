@@ -1,4 +1,4 @@
-html, body {
+body {
     font-family: Arial, sans-serif;
     height: 100%;
     margin: 0;
@@ -31,7 +31,10 @@ li:hover {
     font-size: 16px;
 }
 
-#hide-listings,
+#hide-listings {
+    width: 48%;
+}
+
 #show-listings {
     width: 48%;
 }

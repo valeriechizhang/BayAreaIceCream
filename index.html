@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 
 <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bay Area Ice Cream Map</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -16,14 +19,14 @@
         <h4 id="menu" data-bind="text: menuAction, click: toggleNav"></h4>
     </div>
     <div class="container">
-        <div id="options-box">
+        <aside id="options-box">
             <div id="menu-title" style="text-align:center;">
                 <h2>Bay Area Ice Cream Map</h2>
                 <img src="Powered-by-Foursquare.png" alt="Foursquare-logo" style="height:20px;">
             </div>
             <div>
-                <input id="show-listings" type="button" value="Show Listings">
-                <input id="hide-listings" type="button" value="Hide Listings">
+                <input id="show-listings" type="button" value="Show Listings" data-bind="click: showListings">
+                <input id="hide-listings" type="button" value="Hide Listings" data-bind="click: hideListings">
             </div>
             <hr>
             <div id="current-icplace">
@@ -36,18 +39,19 @@
                     <li data-bind='text: title, click: $parent.clickLocation'></li>
                 </ur>
             </div>
-
-        </div>
-        <div id="map"></div>
+        </aside>
+        <main id="map"></main>
     </div>
 
-    <script async defer
-            src="http://maps.googleapis.com/maps/api/js?libraries=places,drawing,geometry&key=AIzaSyDGwyhdFTvVrH-BS1RyG5qxA6EEZbZaTSY&v=3&callback=initMap">
-    </script>
+
     <script src="libs/jquery.min.js"></script>
     <script src="libs/knockout-3.2.0.js"></script>
     <script src="http://www.google.com/jsapi" type="text/javascript"></script>
     <script src="script.js"></script>
+    <script async defer
+            src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDGwyhdFTvVrH-BS1RyG5qxA6EEZbZaTSY&v=3&callback=initMap">
+    </script>
+
 </body>
 
 

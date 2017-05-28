@@ -15,8 +15,8 @@ var locations =  [
 
 // Foursquare API keys
 var fsURL = 'https://api.foursquare.com/v2/venues/';
-var fsClient_Id = '1BD2UEDFOZZHDS0AH2ZUA403HXV4VPTWBQLYD1BDHBWMPF14';
-var fsClient_Secret = 'ENVL3POCNUUG1IBLMRTI1ZNCG3OKWJT3UG0TLF4TFUQQ14Y2';
+var fsClientId = '1BD2UEDFOZZHDS0AH2ZUA403HXV4VPTWBQLYD1BDHBWMPF14';
+var fsClientSecret = 'ENVL3POCNUUG1IBLMRTI1ZNCG3OKWJT3UG0TLF4TFUQQ14Y2';
 
 
 // Implemented the ViewModel using Knockout.js framework.
@@ -31,7 +31,7 @@ var ViewModel = function() {
     self.filterInput.subscribe(function() {
         hideMarkers(markers);
         var filter = self.filterInput().toLowerCase();
-        if (filter == '') {
+        if (filter === '') {
             // When the filterInput is empty,
             // reset the list to be the same as the locations array.
             showListings();
@@ -46,7 +46,7 @@ var ViewModel = function() {
                 // If a location's title contains the filter key,
                 // keep the location in the list and display its marker.
                 if (locations[i].title.toLowerCase().includes(filter)) {
-                    loc = locations[i]
+                    loc = locations[i];
                     showMarker(loc);
                     filterList.push(locations[i]);
                     count += 1;
@@ -55,7 +55,7 @@ var ViewModel = function() {
             self.locationList.removeAll();
             self.locationList.push.apply(self.locationList, filterList);
             // If no result is left after filtering, let the user know that there's no result.
-            if (count == 0) {
+            if (count === 0) {
                 self.noFilterResult('No results.');
             } else {
                 self.noFilterResult('');
@@ -90,7 +90,7 @@ var ViewModel = function() {
             document.getElementById('options-box').style.display = 'block';
             self.menuAction('Close Menu');
         }
-    }
+    };
 
     // Track the size of the window.
     self.windowWidth = ko.observable();
@@ -108,7 +108,15 @@ var ViewModel = function() {
             self.menuAction('Open Menu');
         }
     });
-}
+
+    self.showListings = function() {
+        showListings();
+    };
+
+    self.hideListings = function() {
+        hideMarkers(markers);
+    };
+};
 
 ko.applyBindings(new ViewModel());
 
@@ -120,6 +128,10 @@ var placeMarkers = [];
 var largeInfowindow;
 
 function initMap() {
+    if (google.maps === null) {
+        alert('Google map is not available.');
+        return;
+    }
     // Constructor creates a new map - only center and zoom are required
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 37.7749, lng: 122.4194},
@@ -169,10 +181,13 @@ function initMap() {
 
     map.fitBounds(bounds);
 
+
+    /*
     document.getElementById('show-listings').addEventListener('click', showListings);
     document.getElementById('hide-listings').addEventListener('click', function() {
         hideMarkers(markers);
     });
+    */
 
 }
 
@@ -182,13 +197,14 @@ function initMap() {
 // and populate based on that markers position.
 function populateInfoWindow(marker, infowindow) {
 
+    infowindow.setContent('');
     var innerHTML = '<div>';
 
     // First, retrieve information of the location by calling Foursquare API.
     // Using the data retrieved to create the information in the infowindow.
     var fsId = marker.fsId;
     var url = 'https://api.foursquare.com/v2/venues/' + fsId + '?client_id='
-        + fsClient_Id + '&client_secret=' + fsClient_Secret + '&v=20170527&m=foursquare';
+        + fsClientId + '&client_secret=' + fsClientSecret + '&v=20170527&m=foursquare';
 
     $.getJSON(url, function(data) {
         response = data.response.venue;
@@ -272,7 +288,7 @@ function showMarker(location) {
     for (var i = 0; i < markers.length; i++) {
         if (markers[i].title == location.title) {
             var marker = markers[i];
-            marker.setMap(map)
+            marker.setMap(map);
         }
     }
 }
@@ -298,10 +314,10 @@ function showInfo(title) {
     for (var i = 0; i < markers.length; i++) {
         if (markers[i].title == title) {
             var marker = markers[i];
-            marker.setMap(map)
+            marker.setMap(map);
             if (largeInfowindow.marker != marker) {
                 bounceMarker(marker);
-                populateInfoWindow(marker, largeInfowindow)
+                populateInfoWindow(marker, largeInfowindow);
             }
         }
     }
