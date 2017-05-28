@@ -12,32 +12,39 @@ var locations =  [
         {title: 'Twirl and Dip', location: {lat: 37.768791, lng: -122.467963}, fsId: '4c7d7e4e9221236aeb6c7f3d'},
 ];
 
+
+// Foursquare API keys
 var fsURL = 'https://api.foursquare.com/v2/venues/';
 var fsClient_Id = '1BD2UEDFOZZHDS0AH2ZUA403HXV4VPTWBQLYD1BDHBWMPF14';
 var fsClient_Secret = 'ENVL3POCNUUG1IBLMRTI1ZNCG3OKWJT3UG0TLF4TFUQQ14Y2';
 
-//'https://api.foursquare.com/v2/venues/49f5fab6f964a520e26b1fe3?client_id=1BD2UEDFOZZHDS0AH2ZUA403HXV4VPTWBQLYD1BDHBWMPF14&client_secret=ENVL3POCNUUG1IBLMRTI1ZNCG3OKWJT3UG0TLF4TFUQQ14Y2&v=20170527&m=foursquare'
 
+// Implemented the ViewModel using Knockout.js framework.
 var ViewModel = function() {
     var self = this;
     self.filterInput = ko.observable('');
-    self.filterValue = self.filterInput;
     self.locationList = ko.observableArray([]);
     self.locationList.push.apply(self.locationList, locations);
     self.noFilterResult = ko.observable('');
 
+    // Track the change of the filterInput and update the list accordingly.
     self.filterInput.subscribe(function() {
         hideMarkers(markers);
         var filter = self.filterInput().toLowerCase();
-        if (filter === '') {
+        if (filter == '') {
+            // When the filterInput is empty,
+            // reset the list to be the same as the locations array.
             showListings();
             self.noFilterResult('');
             self.locationList.removeAll();
             self.locationList.push.apply(self.locationList, locations);
         } else {
+            // Filter the list when the filterInput is not empty.
             var count = 0;
             var filterList = [];
             for (var i = 0; i < locations.length; i++) {
+                // If a location's title contains the filter key,
+                // keep the location in the list and display its marker.
                 if (locations[i].title.toLowerCase().includes(filter)) {
                     loc = locations[i]
                     showMarker(loc);
@@ -47,6 +54,7 @@ var ViewModel = function() {
             }
             self.locationList.removeAll();
             self.locationList.push.apply(self.locationList, filterList);
+            // If no result is left after filtering, let the user know that there's no result.
             if (count == 0) {
                 self.noFilterResult('No results.');
             } else {
@@ -62,13 +70,16 @@ var ViewModel = function() {
         self.noFilterResult('');
     };
 
+    // Open the infowindow when a location in the list is clicked.
     self.clickLocation = function(location) {
         showInfo(location.title);
+        // If the map is not displaying on the page, display the map.
         if (document.getElementById('map').style.display == 'none') {
             self.toggleNav();
         }
     };
 
+    // Open and close the menu/navigation to create responsive UI.
     self.toggleNav = function() {
         if (self.menuAction() == 'Close Menu') {
             document.getElementById('options-box').style.display = 'none';
@@ -81,14 +92,15 @@ var ViewModel = function() {
         }
     }
 
+    // Track the size of the window.
     self.windowWidth = ko.observable();
-
     // This will execute whenever the window is resize
     // https://stackoverflow.com/questions/7789043/how-can-i-detect-window-size-with-jquery
     $(window).resize(function() {
         self.windowWidth($(window).width()); // New width
     });
 
+    // Change the UI as the window size changes.
     self.windowWidth.subscribe(function() {
         if (parseInt(self.windowWidth()) > 700) {
             document.getElementById('map').style.display = 'block';
@@ -100,11 +112,12 @@ var ViewModel = function() {
 
 ko.applyBindings(new ViewModel());
 
+
+
 var map;
 var markers = [];
 var placeMarkers = [];
 var largeInfowindow;
-
 
 function initMap() {
     // Constructor creates a new map - only center and zoom are required
@@ -119,7 +132,6 @@ function initMap() {
 
     var defaultIcon = makeMarkerIcon('0091ff');
     var highlightedIcon = makeMarkerIcon('ffff24');
-
 
     for (var i = 0; i < locations.length; i++) {
         // Get the position from the location array
@@ -170,11 +182,13 @@ function initMap() {
 // and populate based on that markers position.
 function populateInfoWindow(marker, infowindow) {
 
+    var innerHTML = '<div>';
+
+    // First, retrieve information of the location by calling Foursquare API.
+    // Using the data retrieved to create the information in the infowindow.
     var fsId = marker.fsId;
     var url = 'https://api.foursquare.com/v2/venues/' + fsId + '?client_id='
         + fsClient_Id + '&client_secret=' + fsClient_Secret + '&v=20170527&m=foursquare';
-
-    var innerHTML = '<div>';
 
     $.getJSON(url, function(data) {
         response = data.response.venue;
@@ -241,6 +255,7 @@ function populateInfoWindow(marker, infowindow) {
 }
 
 
+// Show all the locations in the list.
 function showListings() {
     var bounds = new google.maps.LatLngBounds();
     // Extend the boundaries of the map for each marker and display the marker
@@ -252,6 +267,7 @@ function showListings() {
 }
 
 
+// Show the marker of the certain location.
 function showMarker(location) {
     for (var i = 0; i < markers.length; i++) {
         if (markers[i].title == location.title) {
@@ -262,6 +278,7 @@ function showMarker(location) {
 }
 
 
+// Hide all the markers.
 function hideMarkers(markers) {
     for (var i = 0; i < markers.length; i++) {
         markers[i].setMap(null);
@@ -269,26 +286,29 @@ function hideMarkers(markers) {
 }
 
 
+// Create the bounce animation for a marker.
 function bounceMarker(marker) {
     marker.setAnimation(google.maps.Animation.BOUNCE);
     setTimeout(function(){ marker.setAnimation(null); }, 750);
 }
 
 
+// Open the infowindow of a location with the specified title.
 function showInfo(title) {
     for (var i = 0; i < markers.length; i++) {
         if (markers[i].title == title) {
             var marker = markers[i];
             marker.setMap(map)
             if (largeInfowindow.marker != marker) {
-                populateInfoWindow(marker, largeInfowindow)
                 bounceMarker(marker);
+                populateInfoWindow(marker, largeInfowindow)
             }
         }
     }
 }
 
 
+// Customize marker icons with different colors.
 function makeMarkerIcon(markerColor) {
     var markerImage = new google.maps.MarkerImage('http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|'+ markerColor + '|40|_|%E2%80%A2',
         new google.maps.Size(21, 34),
