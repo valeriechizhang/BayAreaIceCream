@@ -82,8 +82,8 @@ var ViewModel = function() {
     // Open and close the menu/navigation to create responsive UI.
     self.toggleNav = function() {
         if (self.menuAction() == 'Close Menu') {
-            document.getElementById('options-box').style.display = 'none';
             document.getElementById('map').style.display = 'block';
+            document.getElementById('options-box').style.display = 'none';
             self.menuAction('Open Menu');
         } else {
             document.getElementById('map').style.display = 'none';
@@ -128,10 +128,6 @@ var placeMarkers = [];
 var largeInfowindow;
 
 function initMap() {
-    if (google.maps === null) {
-        alert('Google map is not available.');
-        return;
-    }
     // Constructor creates a new map - only center and zoom are required
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 37.7749, lng: 122.4194},
@@ -190,6 +186,11 @@ function initMap() {
     */
 
 }
+
+// Error handling for Google Map API
+function mapError() {
+    alert('Error: Google Map cannot be loaded.');
+};
 
 
 // This function populates the infowindow when the marker is clicked.
